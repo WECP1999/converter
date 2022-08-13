@@ -1,26 +1,72 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
 
-function App() {
+type TemperatureType = 'F' | 'K' | 'Both' | 'none';
+
+const App = () => {
+  const [defaultTemperature, setDefaultTemperature] = React.useState('');
+  const [temperatureType, setTemperatureType] =
+    React.useState<TemperatureType>('none');
+
+  const FahrenheitResult = React.useMemo(
+    () => (
+      <div>
+        <p>
+          <b>Fahrenheit result</b> = {(+defaultTemperature * 9) / 5 + 32}°F
+        </p>
+      </div>
+    ),
+    [defaultTemperature]
+  );
+
+  const KelvinResult = React.useMemo(
+    () => (
+      <div>
+        <p>
+          <b>Kelvin result</b> = {+defaultTemperature + 273.15}°K
+        </p>
+      </div>
+    ),
+    [defaultTemperature]
+  );
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
+      <div>
+        <label htmlFor="defaultTemperature">Write an temperature</label>
+        <input
+          type="number"
+          name="defaultTemperature"
+          id="defaultTemperature"
+          onChange={({ target }) => setDefaultTemperature(target.value)}
+          value={defaultTemperature}
+        />
+      </div>
+      <div>
+        <label htmlFor="temperatureType">Parse Temperature</label>
+        <select
+          name="temperatureType"
+          id="temperatureType"
+          value={temperatureType}
+          onChange={({ target }) =>
+            setTemperatureType(target.value as TemperatureType)
+          }
         >
-          Learn React
-        </a>
-      </header>
+          <option value="none">None</option>
+          <option value="F">Fahrenheit</option>
+          <option value="K">Kelvin</option>
+          <option value="Both">Both</option>
+        </select>
+      </div>
+      <br />
+      <div>
+        {(temperatureType === 'Both' || temperatureType === 'F') &&
+          FahrenheitResult}
+        {(temperatureType === 'Both' || temperatureType === 'F') &&
+          KelvinResult}
+      </div>
     </div>
   );
-}
+};
 
 export default App;
